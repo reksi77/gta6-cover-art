@@ -3,21 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Vice Sunset — Cover Art Studio</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+<header class="top">
+  <div>
+    <h1>Vice Sunset <span>Cover Art Studio</span></h1>
+    <p>Turn your photos and a caption into GTA 6-style poster art. Runs fully offline — photos never leave your machine.</p>
+  </div>
+  <div class="top-actions">
+    <button id="surprise" type="button">Surprise me</button>
+    <button id="reset-all" type="button" class="ghost">Reset</button>
+  </div>
+</header>
 <main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
+  <section class="controls" aria-label="Cover controls">
+    <section class="group">
+      <h2>Layout</h2>
+      <div id="layout-group" class="btn-row" role="group" aria-label="Layout"></div>
+    </section>
+    <section class="group">
+      <h2>Colour grade</h2>
+      <div id="grade-group" class="btn-row" role="group" aria-label="Colour grade"></div>
+    </section>
+    <section class="group">
+      <h2>Export size</h2>
+      <div id="size-group" class="btn-row" role="group" aria-label="Export size"></div>
+    </section>
+    <section class="group">
+      <h2>Caption</h2>
+      <label>Words <input id="caption" type="text" maxlength="48" value="Sunset Heist"></label>
+      <div class="row">
+        <span>Colour</span>
+        <div id="color-group" class="swatches" role="group" aria-label="Caption colour"></div>
+      </div>
+      <label>Size <input id="caption-size" type="range" min="0.06" max="0.16" step="0.005" value="0.11"></label>
+      <label>Tilt <input id="tilt" type="range" min="-6" max="6" step="1" value="-2"></label>
+      <label class="check"><input id="outline" type="checkbox" checked> Bold outline</label>
+    </section>
+    <section class="group">
+      <h2>Panels</h2>
+      <p class="hint">Click a panel to select it, then drag it on the preview to position the photo, or scroll over it to zoom. Drop a photo file straight onto the preview.</p>
+      <div id="panels"></div>
+    </section>
+    <button id="export" type="button" class="export">Export PNG</button>
     <p id="status" role="status"></p>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+  <section class="preview" aria-label="Cover preview">
+    <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+    <p class="hint">Preview renders at export resolution — what you see is the PNG you get.</p>
+  </section>
 </main>
+<footer class="foot">
+  <p>An original design in the style of GTA 6 posters. No Rockstar logos, artwork or fonts. Sample photos were made for make.fun and are free to use.</p>
+</footer>
 <script type="module" src="./src/main.js"></script>
 </body>
 </html>

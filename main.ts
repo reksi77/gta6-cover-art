@@ -1,23 +1,39 @@
-// A working gta6-cover-art-01 entry (Node 22, standard library only): the app is this directory's app/ folder, plain
-// static files a desktop browser loads offline (app/index.html and its ES modules, no library and no network
-// request), and the program hands it in. It copies app/ and screenshots/ from beside this file to /output and writes
-// /output/dossier.json, the summary the judge reads, with the vendored make.fun library. Only the plumbing, not the
-// cover art the bounty asks for: Cover Snap, a plain one-photo square cover with a sunset tint and a bold caption,
-// exported as a 1080 x 1080 PNG. Its two sample photos (app/samples/) were made for make.fun with an image model and
-// are free to use. Build your own GTA-style cover maker in its place, put your 3 or 4 PNG or JPEG screenshots in
-// screenshots/ (the first by name is the cover) and run it.
+// Vice Sunset Cover Studio — a gta6-cover-art-01 entry (Node 22, standard
+// library only). The app is this directory's app/ folder: plain static files
+// a desktop browser loads offline (app/index.html and its ES modules, no
+// library and no network request). It turns a photo and a caption into
+// GTA-style poster art — comic panels, a sunset or neon grade, bold caption
+// lettering — and exports it as a PNG. This program hands the app in: it
+// copies app/ and screenshots/ from beside this file to /output and writes
+// /output/dossier.json with the vendored make.fun library.
 //
 // Serve it locally with `node serve.ts`, then open http://localhost:8080.
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+// My own pre-flight check: the hand-in is only complete when the app entry
+// point and at least one screenshot sit beside this file. I check that here,
+// before anything is copied, so a broken tree fails loudly instead of
+// handing in an empty dossier.
+const entryPoint = join(here, 'app', 'index.html');
+if (!existsSync(entryPoint)) {
+  throw new Error(`entry point missing: ${entryPoint}`);
+}
+const shotDir = join(here, 'screenshots');
+const shotFiles = existsSync(shotDir)
+  ? readdirSync(shotDir).filter((name) => !name.startsWith('.'))
+  : [];
+if (shotFiles.length < 1 || shotFiles.length > 4) {
+  throw new Error(`expected 1-4 screenshots, found ${shotFiles.length}`);
+}
 
 mkdirSync(out, { recursive: true });
 cpSync(join(here, 'app'), join(out, 'app'), { recursive: true });
@@ -37,4 +53,8 @@ writeFileSync(
     app_max_bytes: 50331648,
     app_path_max_bytes: 1000,
   }),
+);
+
+console.log(
+  `Vice Sunset handed in: app/ + ${shotFiles.length} screenshot(s) (${shotFiles.join(', ')}) -> ${out} (dossier.json written)`,
 );
